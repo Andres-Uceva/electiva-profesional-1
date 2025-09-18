@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,36 +11,209 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-      ),
-      home: const MyHomePage(title: 'Hola, Flutter'),
-    );
+    return MaterialApp.router(routerConfig: _router);
   }
 }
+
+final _router = GoRouter(
+  initialLocation: '/',
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => MyHomePage(title: 'Hola Flutter'),
+    ),
+    GoRoute(
+      path: '/primaria',
+      builder: (context, state) => TextoPrimera(),
+    ),
+    GoRoute(
+      path: '/secundaria',
+      builder: (context, state) => Secundaria(),
+    ),
+  ],
+);
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
   final String title;
   @override
   State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class TextoPrimera extends StatelessWidget {
+  final TextEditingController _controlador = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Primera pantalla'), centerTitle: true),
+      body: Center(
+        child: Column(
+          children: [
+            const SizedBox(height: 24),
+            TextField(
+              controller: _controlador,
+              decoration: InputDecoration(
+                labelText: 'Escribe algo',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () => context.go('/secundaria',
+                      extra: _controlador.text),
+                  child: const Text('Go secundaria'),
+                ),
+                ElevatedButton(
+                  onPressed: () => context.push('/secundaria',
+                      extra: _controlador.text),
+                  child: const Text('Push secundaria'),
+                ),
+                ElevatedButton(
+                  onPressed: () => context.replace('/secundaria',
+                      extra: _controlador.text),
+                  child: const Text('Replace secundaria'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    throw UnimplementedError();
+  }
+}
+
+class Secundaria extends StatelessWidget {
+
+  const Secundaria({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final mensaje = GoRouterState.of(context).extra as String?;
+
+    return DefaultTabController(
+      initialIndex: 1,
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Pantalla secundaria'),
+          bottom: const TabBar(
+            tabs: <Widget>[
+              Tab(icon: Icon(Icons.cloud_outlined)),
+              Tab(icon: Icon(Icons.beach_access_sharp)),
+              Tab(icon: Icon(Icons.brightness_5_sharp)),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: <Widget>[
+            Center(child: Text(mensaje!)),
+            Center(child: EjemploGrid(key: key)),
+            Center(child: CicloDeVidaDemo()),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class EjemploGrid extends StatelessWidget {
+  const EjemploGrid({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+      padding: const EdgeInsets.all(16),
+      mainAxisSpacing: 16,
+      crossAxisSpacing: 16,
+      crossAxisCount: 3,
+      children: <Widget>[
+        Container(
+          padding: const EdgeInsets.all(8),
+          color: Colors.teal[100],
+          child: const Text("Elemento A"),
+        ),
+        Container(
+          padding: const EdgeInsets.all(8),
+          color: Colors.teal[200],
+          child: const Text('Elemento B'),
+        ),
+        Container(
+          padding: const EdgeInsets.all(8),
+          color: Colors.teal[300],
+          child: const Text('Elemento C'),
+        ),
+        Container(
+          padding: const EdgeInsets.all(8),
+          color: Colors.teal[400],
+          child: const Text('Elemento D'),
+        ),
+        Container(
+          padding: const EdgeInsets.all(8),
+          color: Colors.teal[500],
+          child: const Text('Elemento E'),
+        ),
+        Container(
+          padding: const EdgeInsets.all(8),
+          color: Colors.teal[600],
+          child: const Text('Elemento F'),
+        ),
+      ],
+    );
+  }
+}
+
+class CicloDeVidaDemo extends StatefulWidget {
+  @override
+  State<CicloDeVidaDemo> createState() => _CicloDeVidaDemoState();
+}
+
+class _CicloDeVidaDemoState extends State<CicloDeVidaDemo> {
+  int contador = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    print('initState() -> Se ejecuta al crear el widget');
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print('didChangeDependencies() -> Se ejecuta cuando las dependencias cambian');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('build() -> Se ejecuta cada vez que el widget se construye');
+    return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Contador: $contador'),
+            ElevatedButton(
+              onPressed: () {
+                print('setState() -> Se llamó a setState()');
+                setState(() {
+                  contador++;
+                });
+              },
+              child: Text('Incrementar'),
+            ),
+          ],
+        ),
+      );
+  }
+
+  @override
+  void dispose() {
+    print('dispose() -> Se ejecuta cuando el widget se elimina');
+    super.dispose();
+  }
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -52,9 +226,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ? '¡Título cambiado!'
           : 'Hola, Flutter';
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Título actualizado')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Título actualizado')));
   }
 
   @override
@@ -94,17 +268,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: 80,
                 ),
                 const SizedBox(width: 16),
-                Image.asset(
-                  'assets/paisaje.jpg',
-                  width: 80,
-                  height: 80,
-                ),
+                Image.asset('assets/paisaje.jpg', width: 80, height: 80),
               ],
             ),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: _toggleTitle,
               child: const Text('Cambiar título'),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => context.push('/primaria'),
+              child: const Text('Ir a pantalla primaria'),
             ),
             const SizedBox(height: 24),
             Expanded(
