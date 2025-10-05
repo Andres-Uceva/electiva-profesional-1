@@ -1,5 +1,10 @@
+import 'dart:async';
+import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:taller1/futuro.dart';
+import 'package:taller1/isolate.dart';
+import 'package:taller1/temporizador.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,13 +28,21 @@ final _router = GoRouter(
       builder: (context, state) => MyHomePage(title: 'Hola Flutter'),
     ),
     GoRoute(
-      path: '/primaria',
-      builder: (context, state) => TextoPrimera(),
+      path: '/primaria', 
+      builder: (context, state) => TextoPrimera()),
+    GoRoute(
+      path: '/secundaria', 
+      builder: (context, state) => Secundaria()),
+    GoRoute(
+      path: '/temporizador',
+      builder: (context, state) => const Temporizador(),
     ),
     GoRoute(
-      path: '/secundaria',
-      builder: (context, state) => Secundaria(),
-    ),
+      path: '/futuro', 
+      builder: (context, state) => const Futuro()),
+    GoRoute(
+      path: '/isolate',
+      builder: (context, state) => const IsolatePantalla()),
   ],
 );
 
@@ -42,6 +55,8 @@ class MyHomePage extends StatefulWidget {
 
 class TextoPrimera extends StatelessWidget {
   final TextEditingController _controlador = TextEditingController();
+
+  TextoPrimera({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -63,18 +78,18 @@ class TextoPrimera extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: () => context.go('/secundaria',
-                      extra: _controlador.text),
+                  onPressed: () =>
+                      context.go('/secundaria', extra: _controlador.text),
                   child: const Text('Go secundaria'),
                 ),
                 ElevatedButton(
-                  onPressed: () => context.push('/secundaria',
-                      extra: _controlador.text),
+                  onPressed: () =>
+                      context.push('/secundaria', extra: _controlador.text),
                   child: const Text('Push secundaria'),
                 ),
                 ElevatedButton(
-                  onPressed: () => context.replace('/secundaria',
-                      extra: _controlador.text),
+                  onPressed: () =>
+                      context.replace('/secundaria', extra: _controlador.text),
                   child: const Text('Replace secundaria'),
                 ),
               ],
@@ -83,12 +98,10 @@ class TextoPrimera extends StatelessWidget {
         ),
       ),
     );
-    throw UnimplementedError();
   }
 }
 
 class Secundaria extends StatelessWidget {
-
   const Secundaria({super.key});
 
   @override
@@ -168,6 +181,8 @@ class EjemploGrid extends StatelessWidget {
 }
 
 class CicloDeVidaDemo extends StatefulWidget {
+  const CicloDeVidaDemo({super.key});
+
   @override
   State<CicloDeVidaDemo> createState() => _CicloDeVidaDemoState();
 }
@@ -178,40 +193,42 @@ class _CicloDeVidaDemoState extends State<CicloDeVidaDemo> {
   @override
   void initState() {
     super.initState();
-    print('initState() -> Se ejecuta al crear el widget');
+    debugPrint('initState() -> Se ejecuta al crear el widget');
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    print('didChangeDependencies() -> Se ejecuta cuando las dependencias cambian');
+    debugPrint(
+      'didChangeDependencies() -> Se ejecuta cuando las dependencias cambian',
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    print('build() -> Se ejecuta cada vez que el widget se construye');
+    debugPrint('build() -> Se ejecuta cada vez que el widget se construye');
     return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Contador: $contador'),
-            ElevatedButton(
-              onPressed: () {
-                print('setState() -> Se llamó a setState()');
-                setState(() {
-                  contador++;
-                });
-              },
-              child: Text('Incrementar'),
-            ),
-          ],
-        ),
-      );
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Contador: $contador'),
+          ElevatedButton(
+            onPressed: () {
+              debugPrint('setState() -> Se llamó a setState()');
+              setState(() {
+                contador++;
+              });
+            },
+            child: Text('Incrementar'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   void dispose() {
-    print('dispose() -> Se ejecuta cuando el widget se elimina');
+    debugPrint('dispose() -> Se ejecuta cuando el widget se elimina');
     super.dispose();
   }
 }
@@ -280,6 +297,21 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: () => context.push('/primaria'),
               child: const Text('Ir a pantalla primaria'),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => context.push('/futuro'),
+              child: const Text('Future / async / await'),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => context.push('/temporizador'),
+              child: const Text('Temporizador'),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => context.push('/isolate'),
+              child: const Text('Isolate / Tarea pesada'),
             ),
             const SizedBox(height: 24),
             Expanded(
