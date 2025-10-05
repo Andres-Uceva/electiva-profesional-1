@@ -30,7 +30,7 @@ flutter run
 - Se usa para ejecutar código repetidamente o tras un tiempo específico.
 - Ideal para cronómetros o temporizadores.
 
-## 3️⃣ Isolate
+## Isolate
 - Se usa para tareas **pesadas de CPU** que bloquearían la UI (ej. cálculos grandes).
 - Cada Isolate tiene su propio hilo de ejecución y se comunica por mensajes (`SendPort` / `ReceivePort`).
 
