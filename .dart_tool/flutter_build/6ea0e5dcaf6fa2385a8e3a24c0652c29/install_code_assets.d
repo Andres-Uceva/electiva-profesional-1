@@ -1,0 +1,1 @@
+ /home/andrsk8/Documents/electiva-profesional-1/.dart_tool/flutter_build/6ea0e5dcaf6fa2385a8e3a24c0652c29/native_assets.json: 
