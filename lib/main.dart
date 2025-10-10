@@ -1,13 +1,22 @@
-import 'dart:async';
-import 'dart:isolate';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taller1/futuro.dart';
 import 'package:taller1/isolate.dart';
+import 'package:taller1/listado/listado_detail.dart';
+import 'package:taller1/listado/listado_view.dart';
+import 'package:taller1/modelos/pokemon.dart';
 import 'package:taller1/temporizador.dart';
 
-void main() {
+void main() async {
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    debugPrint("Error loading .env file: $e");
+  } 
+
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
@@ -43,6 +52,16 @@ final _router = GoRouter(
     GoRoute(
       path: '/isolate',
       builder: (context, state) => const IsolatePantalla()),
+    GoRoute(
+      path: '/listado',
+      builder: (context, state) => ListaView()),
+    GoRoute(
+      path: '/listado_detail',
+      builder: (context, state) {
+        final pokemon = state.extra as Pokemon;
+        return ListadoDetail(pokemon: pokemon);
+      },
+    ),
   ],
 );
 
@@ -255,6 +274,45 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(_appBarTitle),
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              child: Text(
+                'Menú de navegación',
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text('Pantalla primaria'),
+              onTap: () =>context.push('/primaria'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.contact_mail),
+              title: const Text('Listado'),
+              onTap: () =>context.push('/listado'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.contact_mail),
+              title: const Text('Temporizador'),
+              onTap: () =>context.push('/temporizador'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.contact_mail),
+              title: const Text('Tarea pesada / Isolate'),
+              onTap: () =>context.push('/isolate'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.contact_mail),
+              title: const Text('Asincronico / Future'),
+              onTap: () =>context.push('/futuro'),
+            ),
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -292,26 +350,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: _toggleTitle,
               child: const Text('Cambiar título'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => context.push('/primaria'),
-              child: const Text('Ir a pantalla primaria'),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () => context.push('/futuro'),
-              child: const Text('Future / async / await'),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () => context.push('/temporizador'),
-              child: const Text('Temporizador'),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () => context.push('/isolate'),
-              child: const Text('Isolate / Tarea pesada'),
             ),
             const SizedBox(height: 24),
             Expanded(
