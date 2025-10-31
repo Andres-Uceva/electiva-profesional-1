@@ -5,6 +5,9 @@ import 'package:taller1/futuro.dart';
 import 'package:taller1/isolate.dart';
 import 'package:taller1/listado/listado_detail.dart';
 import 'package:taller1/listado/listado_view.dart';
+import 'package:taller1/login/login_screen.dart';
+import 'package:taller1/login/register_screen.dart';
+import 'package:taller1/login/session_screen.dart';
 import 'package:taller1/modelos/pokemon.dart';
 import 'package:taller1/temporizador.dart';
 
@@ -52,6 +55,18 @@ final _router = GoRouter(
     GoRoute(
       path: '/isolate',
       builder: (context, state) => const IsolatePantalla()),
+      GoRoute(
+      path: '/login',
+      builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      path: '/session',
+      builder: (context, state) => const SessionScreen(),
+    ),
+    GoRoute(
+      path: '/register',
+      builder: (context, state) => const RegisterScreen(),
+    ),
     GoRoute(
       path: '/listado',
       builder: (context, state) => ListaView()),
@@ -273,6 +288,13 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(_appBarTitle),
+        actions: [
+          IconButton(
+            tooltip: 'Iniciar sesión',
+            icon: const Icon(Icons.login),
+            onPressed: () => context.go('/login'), // Navega a LoginScreen
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(
