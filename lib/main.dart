@@ -10,16 +10,16 @@ import 'package:taller1/login/register_screen.dart';
 import 'package:taller1/login/session_screen.dart';
 import 'package:taller1/modelos/pokemon.dart';
 import 'package:taller1/temporizador.dart';
+import 'package:taller1/views/universidad_fb_list_view.dart';
 
 void main() async {
   try {
     await dotenv.load(fileName: ".env");
   } catch (e) {
     debugPrint("Error loading .env file: $e");
-  } 
+  }
 
   runApp(const MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -39,26 +39,18 @@ final _router = GoRouter(
       path: '/',
       builder: (context, state) => MyHomePage(title: 'Hola Flutter'),
     ),
-    GoRoute(
-      path: '/primaria', 
-      builder: (context, state) => TextoPrimera()),
-    GoRoute(
-      path: '/secundaria', 
-      builder: (context, state) => Secundaria()),
+    GoRoute(path: '/primaria', builder: (context, state) => TextoPrimera()),
+    GoRoute(path: '/secundaria', builder: (context, state) => Secundaria()),
     GoRoute(
       path: '/temporizador',
       builder: (context, state) => const Temporizador(),
     ),
-    GoRoute(
-      path: '/futuro', 
-      builder: (context, state) => const Futuro()),
+    GoRoute(path: '/futuro', builder: (context, state) => const Futuro()),
     GoRoute(
       path: '/isolate',
-      builder: (context, state) => const IsolatePantalla()),
-      GoRoute(
-      path: '/login',
-      builder: (context, state) => const LoginScreen(),
+      builder: (context, state) => const IsolatePantalla(),
     ),
+    GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
     GoRoute(
       path: '/session',
       builder: (context, state) => const SessionScreen(),
@@ -67,14 +59,18 @@ final _router = GoRouter(
       path: '/register',
       builder: (context, state) => const RegisterScreen(),
     ),
-    GoRoute(
-      path: '/listado',
-      builder: (context, state) => ListaView()),
+    GoRoute(path: '/listado', builder: (context, state) => ListaView()),
     GoRoute(
       path: '/listado_detail',
       builder: (context, state) {
         final pokemon = state.extra as Pokemon;
         return ListadoDetail(pokemon: pokemon);
+      },
+    ),
+    GoRoute(
+      path: '/universidadesFirebase',
+      builder: (context, state) {
+        return const UniversidadFbListView();
       },
     ),
   ],
@@ -310,27 +306,27 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               leading: const Icon(Icons.home),
               title: const Text('Pantalla primaria'),
-              onTap: () =>context.push('/primaria'),
+              onTap: () => context.push('/primaria'),
             ),
             ListTile(
               leading: const Icon(Icons.contact_mail),
               title: const Text('Listado'),
-              onTap: () =>context.push('/listado'),
+              onTap: () => context.push('/listado'),
             ),
             ListTile(
               leading: const Icon(Icons.contact_mail),
               title: const Text('Temporizador'),
-              onTap: () =>context.push('/temporizador'),
+              onTap: () => context.push('/temporizador'),
             ),
             ListTile(
               leading: const Icon(Icons.contact_mail),
               title: const Text('Tarea pesada / Isolate'),
-              onTap: () =>context.push('/isolate'),
+              onTap: () => context.push('/isolate'),
             ),
             ListTile(
               leading: const Icon(Icons.contact_mail),
               title: const Text('Asincronico / Future'),
-              onTap: () =>context.push('/futuro'),
+              onTap: () => context.push('/futuro'),
             ),
           ],
         ),
